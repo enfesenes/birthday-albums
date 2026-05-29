@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="bg-ambiance"></div>
+
+  <div id="admin-gate" class="password-gate">
+    <div class="password-gate__card">
+      <h2>🔐 Admin Access</h2>
+      <p>Enter the admin password.</p>
+      <input type="password" id="admin-password-input" class="input" placeholder="Admin password...">
+      <button id="admin-password-submit" class="btn">Enter</button>
+      <p id="admin-password-error" class="form-error" style="display:none;">Wrong password!</p>
+    </div>
+  </div>
+
+  <div id="admin-app" style="display:none;">
+    <header class="header">
+      <h1 class="title">Admin Panel</h1>
+      <p class="subtitle">Manage letters &amp; track submissions</p>
+    </header>
+
+    <div class="admin-container">
+      <!-- Stats -->
+      <div class="admin-stats" id="admin-stats"></div>
+
+      <!-- Actions -->
+      <div class="admin-actions">
+        <button id="btn-refresh" class="btn btn--small">🔄 Refresh</button>
+        <button id="btn-copy-reminder" class="btn btn--small">📋 Copy Reminder Message</button>
+        <button id="btn-export" class="btn btn--small">📥 Export as Text</button>
+      </div>
+
+      <!-- Letters Table -->
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="letters-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Relationship</th>
+              <th>Song</th>
+              <th>Photos</th>
+              <th>Audio</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="letters-tbody"></tbody>
+        </table>
+      </div>
+
+      <p class="admin-empty" id="admin-empty" style="display:none;">No letters yet. Share the upload link with loved ones!</p>
+    </div>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div id="confirm-modal" class="modal" style="display:none;">
+    <div class="modal__overlay"></div>
+    <div class="modal__content" style="max-width:400px;padding:2rem;text-align:center;">
+      <p style="margin-bottom:1rem;font-size:1.1rem;">Delete this letter from <strong id="confirm-name"></strong>?</p>
+      <p style="color:var(--text-muted);margin-bottom:1.5rem;font-size:0.9rem;">This cannot be undone.</p>
+      <div style="display:flex;gap:0.75rem;justify-content:center;">
+        <button id="confirm-delete-btn" class="btn" style="background:var(--error);color:#fff;">Delete</button>
+        <button id="confirm-cancel-btn" class="btn" style="background:var(--border);color:var(--text);">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

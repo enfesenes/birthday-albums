@@ -915,6 +915,32 @@ body {
   font-size: 1.05rem;
 }
 
+.btn--small {
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+}
+
+.btn--icon {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+  line-height: 1;
+}
+
+.btn--icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Utility */
+.text-muted {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
 /* --- Confirmation --- */
 .confirmation {
   text-align: center;
@@ -1021,6 +1047,146 @@ body {
               0 0 25px rgba(232, 184, 109, 0.15);
 }
 
+/* --- Admin Panel --- */
+.admin-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1rem;
+  text-align: center;
+}
+
+.stat-card__number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-card__label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.25rem;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.letter-row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.letter-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.letter-row:last-child td {
+  border-bottom: none;
+}
+
+.letter-name {
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.letter-song {
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.letter-detail td {
+  padding: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.letter-detail__content {
+  padding: 1rem 1.5rem 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.letter-detail__message {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.letter-detail__meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+
+.letter-detail__meta a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.letter-detail__meta a:hover {
+  color: var(--accent-glow);
+}
+
+.admin-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .container {
@@ -1051,6 +1217,14 @@ body {
 
   .modal__body {
     padding: 1.25rem;
+  }
+
+  .admin-table {
+    font-size: 0.75rem;
+  }
+
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
