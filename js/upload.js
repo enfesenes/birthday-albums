@@ -48,7 +48,7 @@
   // --- Submission Counter ---
 
   function updateSubmissionCount() {
-    if (typeof db === "undefined") return;
+    if (typeof supabaseClient === "undefined") return;
     getLetterCount()
       .then(function (count) {
         var el = document.getElementById("submission-count");
@@ -162,8 +162,8 @@
 
     if (!validateForm()) return;
 
-    if (typeof db === "undefined") {
-      alert("Firebase is not configured. Check the setup instructions.");
+    if (typeof supabaseClient === "undefined") {
+      alert("Supabase is not configured. Check the setup instructions.");
       return;
     }
 

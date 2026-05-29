@@ -65,7 +65,7 @@
     lockedGridEl.style.display = "none";
     cdGridEl.style.display = "grid";
 
-    if (typeof db === "undefined") {
+    if (typeof supabaseClient === "undefined") {
       renderDemoAlbums();
       return;
     }
@@ -87,7 +87,7 @@
       placeholders.push({
         id: "demo-" + i,
         name: "Demo " + (i + 1),
-        message: "This is a demo letter. Configure Firebase to see real letters!",
+        message: "This is a demo letter. Configure Supabase to see real letters!",
         songTitle: "Demo Song",
         songArtist: "Demo Artist",
         songUrl: "",
@@ -202,7 +202,7 @@
       lockedGridEl.style.display = "none";
       cdGridEl.style.display = "grid";
 
-      if (typeof db !== "undefined") {
+      if (typeof supabaseClient !== "undefined") {
         getLetters()
           .then(function (letters) {
             renderAlbums(letters);
