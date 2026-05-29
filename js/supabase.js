@@ -2,8 +2,8 @@
 // Supabase Configuration
 // ========================================
 
-var SUPABASE_URL = "YOUR_SUPABASE_URL";
-var SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+var SUPABASE_URL = "https://dzsnjyxysxuvtsnfkxaf.supabase.co";
+var SUPABASE_ANON_KEY = "ae3cf2be6311163f6b5910fece898d7d540015b43e172ff9083890d5758ee848";
 
 var supabaseClient;
 
