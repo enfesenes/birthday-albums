@@ -5,12 +5,12 @@
 // ========================================
 
 const FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBepk8hoifRh4Pqj1zTeC4HWKsjTlcZE0g",
+  authDomain: "horse-dab86.firebaseapp.com",
+  projectId: "horse-dab86",
+  storageBucket: "horse-dab86.firebasestorage.app",
+  messagingSenderId: "133545486824",
+  appId: "1:133545486824:web:31b5d5627bbffb57bedc5d"
 };
 
 let db, storage;
