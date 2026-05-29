@@ -11,8 +11,8 @@
 
   <div class="container">
     <header class="header">
-      <h1 class="title">Happy 19th Birthday</h1>
-      <p class="subtitle">19 albums from the people who love you</p>
+      <h1 class="title">Happy 19th Birthday, İrem!</h1>
+      <p class="subtitle">19 albums for the most highly intelligent horse</p>
     </header>
 
     <div id="countdown" class="countdown">
@@ -55,7 +55,14 @@
       <button class="modal__close">&times;</button>
       <div class="modal__inner">
         <div class="modal__art">
-          <img id="modal-photo" src="" alt="">
+          <div class="carousel">
+            <div class="carousel__stage">
+              <img id="modal-photo" src="" alt="">
+            </div>
+            <button class="carousel__prev" aria-label="Previous photo">&#8249;</button>
+            <button class="carousel__next" aria-label="Next photo">&#8250;</button>
+            <div class="carousel__dots" id="carousel-dots"></div>
+          </div>
         </div>
         <div class="modal__body">
           <p class="modal__from"><span id="modal-name"></span> &mdash; <span id="modal-relationship"></span></p>
@@ -69,6 +76,7 @@
             </div>
           </div>
           <div id="modal-player" class="modal__player"></div>
+            <div id="modal-audio-player" class="modal__audio-player"></div>
         </div>
       </div>
     </div>

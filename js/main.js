@@ -8,6 +8,40 @@
   var BIRTHDAY = new Date(2026, 7, 2); // Aug 2, 2026 (month is 0-indexed)
   var TOTAL_SLOTS = 19;
 
+  var SECRET_ALBUM = {
+    id: "secret-track",
+    name: "Your Secret Admirer",
+    relationship: "The one who built this",
+    message: "Surprise! You opened all 19 albums... so here's a 20th, just for you.\n\nEvery album here was placed with love, and each one represents someone who thinks the world of you. Happy 19th birthday, İrem — the most highly intelligent horse.\n\n🐴💛",
+    songTitle: "Secret Track",
+    songArtist: "Just for You",
+    songUrl: "",
+    photoUrls: [],
+    audioUrl: ""
+  };
+
+  var OPENED_KEY = "birthday-opened-albums";
+
+  function getOpenedAlbums() {
+    try {
+      var raw = localStorage.getItem(OPENED_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function trackOpenedAlbum(id) {
+    var opened = getOpenedAlbums();
+    if (opened.indexOf(id) === -1) {
+      opened.push(id);
+      localStorage.setItem(OPENED_KEY, JSON.stringify(opened));
+    }
+    if (opened.length >= TOTAL_SLOTS) {
+      renderSecretAlbum();
+    }
+  }
+
   var countdownEl = document.getElementById("countdown");
   var cdGridEl = document.getElementById("cd-grid");
   var lockedGridEl = document.getElementById("locked-grid");
@@ -91,7 +125,8 @@
         songTitle: "Demo Song",
         songArtist: "Demo Artist",
         songUrl: "",
-        photoUrl: "",
+        photoUrls: [],
+        audioUrl: "",
         relationship: "Friend"
       });
     }
@@ -117,11 +152,17 @@
     for (var j = 0; j < cases.length; j++) {
       cases[j].addEventListener("click", makeClickHandler(letters[j]));
     }
+
+    // Check if secret album should be revealed
+    if (getOpenedAlbums().length >= TOTAL_SLOTS) {
+      renderSecretAlbum();
+    }
   }
 
   function renderCdCase(letter, index) {
-    var photoHtml = letter.photoUrl
-      ? '<img class="cd-case__art" src="' + escapeHtml(letter.photoUrl) + '" alt="" loading="lazy">'
+    var firstPhoto = letter.photoUrls && letter.photoUrls.length > 0 ? letter.photoUrls[0] : null;
+    var photoHtml = firstPhoto
+      ? '<img class="cd-case__art" src="' + escapeHtml(firstPhoto) + '" alt="" loading="lazy">'
       : '<div class="cd-case__art" style="background:linear-gradient(135deg, #2a2a40, #1a1a2e);display:flex;align-items:center;justify-content:center;font-size:2rem;color:#3a3a50;">&#9835;</div>';
 
     return (
@@ -155,9 +196,15 @@
 
   // --- Modal ---
 
+  var currentCarouselIndex = 0;
+  var currentPhotoUrls = [];
+
   function openModal(letter) {
-    document.getElementById("modal-photo").src = letter.photoUrl || "";
-    document.getElementById("modal-photo").style.display = letter.photoUrl ? "block" : "none";
+    // Photos carousel
+    currentPhotoUrls = letter.photoUrls || [];
+    currentCarouselIndex = 0;
+    setupCarousel(currentPhotoUrls);
+
     document.getElementById("modal-name").textContent = letter.name;
     document.getElementById("modal-relationship").textContent = letter.relationship || "";
     document.getElementById("modal-message").textContent = letter.message;
@@ -173,6 +220,7 @@
     }
 
     renderPlayer(letter.songUrl);
+    renderAudioPlayer(letter.audioUrl);
 
     // Reset scroll position
     var content = modalEl.querySelector(".modal__content");
@@ -180,6 +228,124 @@
 
     modalEl.classList.add("modal--open");
     document.body.style.overflow = "hidden";
+
+    // Track opened album
+    trackOpenedAlbum(letter.id);
+  }
+
+  function setupCarousel(photoUrls) {
+    var carousel = document.querySelector(".carousel");
+    var stageImg = document.getElementById("modal-photo");
+    var prevBtn = carousel.querySelector(".carousel__prev");
+    var nextBtn = carousel.querySelector(".carousel__next");
+    var dotsEl = document.getElementById("carousel-dots");
+
+    if (!photoUrls || photoUrls.length === 0) {
+      stageImg.src = "";
+      stageImg.style.display = "none";
+      prevBtn.style.display = "none";
+      nextBtn.style.display = "none";
+      dotsEl.innerHTML = "";
+      return;
+    }
+
+    if (photoUrls.length === 1) {
+      stageImg.src = photoUrls[0];
+      stageImg.style.display = "block";
+      prevBtn.style.display = "none";
+      nextBtn.style.display = "none";
+      dotsEl.innerHTML = "";
+      return;
+    }
+
+    // Multiple photos — show controls
+    prevBtn.style.display = "";
+    nextBtn.style.display = "";
+    updateCarouselSlide(0);
+    renderCarouselDots(photoUrls, dotsEl);
+  }
+
+  function updateCarouselSlide(index) {
+    currentCarouselIndex = index;
+    var stageImg = document.getElementById("modal-photo");
+    stageImg.src = currentPhotoUrls[index];
+    stageImg.style.display = "block";
+    updateCarouselDots();
+  }
+
+  function renderCarouselDots(photoUrls, dotsEl) {
+    var html = "";
+    for (var i = 0; i < photoUrls.length; i++) {
+      html += '<span class="carousel__dot' + (i === currentCarouselIndex ? ' carousel__dot--active' : '') + '" data-index="' + i + '"></span>';
+    }
+    dotsEl.innerHTML = html;
+
+    var dots = dotsEl.querySelectorAll(".carousel__dot");
+    for (var j = 0; j < dots.length; j++) {
+      dots[j].addEventListener("click", function () {
+        updateCarouselSlide(parseInt(this.getAttribute("data-index")));
+      });
+    }
+  }
+
+  function updateCarouselDots() {
+    var dots = document.getElementById("carousel-dots").querySelectorAll(".carousel__dot");
+    for (var i = 0; i < dots.length; i++) {
+      if (i === currentCarouselIndex) {
+        dots[i].classList.add("carousel__dot--active");
+      } else {
+        dots[i].classList.remove("carousel__dot--active");
+      }
+    }
+  }
+
+  function carouselPrev() {
+    if (currentPhotoUrls.length === 0) return;
+    var newIndex = currentCarouselIndex === 0 ? currentPhotoUrls.length - 1 : currentCarouselIndex - 1;
+    updateCarouselSlide(newIndex);
+  }
+
+  function carouselNext() {
+    if (currentPhotoUrls.length === 0) return;
+    var newIndex = currentCarouselIndex === currentPhotoUrls.length - 1 ? 0 : currentCarouselIndex + 1;
+    updateCarouselSlide(newIndex);
+  }
+
+  function renderAudioPlayer(audioUrl) {
+    var container = document.getElementById("modal-audio-player");
+    container.innerHTML = "";
+
+    if (!audioUrl) return;
+
+    container.innerHTML =
+      '<div class="audio-player">' +
+        '<span class="audio-player__icon">🎙️</span>' +
+        '<span class="audio-player__label">Voice Note</span>' +
+        '<audio class="audio-player__el" controls src="' + escapeHtml(audioUrl) + '"></audio>' +
+      '</div>';
+  }
+
+  function renderSecretAlbum() {
+    var secretEl = document.getElementById("secret-track");
+    if (secretEl) return; // already rendered
+
+    var grid = document.getElementById("cd-grid");
+    var wrapper = document.createElement("div");
+    wrapper.id = "secret-track";
+    wrapper.className = "secret-track";
+    wrapper.innerHTML =
+      '<div class="secret-track__label">✦ Secret Track ✦</div>' +
+      renderCdCase(SECRET_ALBUM, 19);
+    wrapper.querySelector(".cd-case").classList.add("cd-case--secret");
+    wrapper.querySelector(".cd-case").addEventListener("click", function () {
+      openModal(SECRET_ALBUM);
+    });
+    grid.parentNode.insertBefore(wrapper, grid.nextSibling);
+
+    // Scroll into view after a small delay
+    setTimeout(function () {
+      wrapper.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 300);
   }
 
   function renderPlayer(url) {
@@ -252,9 +418,18 @@
   modalEl.querySelector(".modal__overlay").addEventListener("click", closeModal);
   modalEl.querySelector(".modal__close").addEventListener("click", closeModal);
 
+  document.querySelector(".carousel__prev").addEventListener("click", carouselPrev);
+  document.querySelector(".carousel__next").addEventListener("click", carouselNext);
+
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && modalEl.classList.contains("modal--open")) {
       closeModal();
+    }
+    if (e.key === "ArrowLeft" && modalEl.classList.contains("modal--open") && currentPhotoUrls.length > 1) {
+      carouselPrev();
+    }
+    if (e.key === "ArrowRight" && modalEl.classList.contains("modal--open") && currentPhotoUrls.length > 1) {
+      carouselNext();
     }
   });
 

@@ -60,16 +60,29 @@
       </div>
 
       <div class="form-group">
-        <label>Photo of You Together *</label>
+        <label>Photos of You Together (up to 5) *</label>
         <div id="photo-drop" class="photo-drop">
-          <input type="file" id="photo-file" class="photo-drop__input" accept="image/*">
+          <input type="file" id="photo-file" class="photo-drop__input" accept="image/*" multiple>
           <div class="photo-drop__placeholder">
             <span class="photo-drop__icon">📸</span>
-            <span>Click or drag a photo here</span>
+            <span>Click or drag up to 5 photos here</span>
           </div>
-          <img id="photo-preview" class="photo-drop__preview" src="" alt="" style="display:none;">
+          <div id="photo-thumbs" class="photo-thumbs"></div>
         </div>
-        <p id="photo-error" class="form-error" style="display:none;">Please select a photo.</p>
+        <p id="photo-error" class="form-error" style="display:none;">Please select at least one photo.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Voice Note (optional — .mp3, .m4a, .wav, .ogg, max 5MB)</label>
+        <div id="audio-drop" class="audio-drop">
+          <input type="file" id="audio-file" class="audio-drop__input" accept="audio/mp3,audio/m4a,audio/wav,audio/ogg,.mp3,.m4a,.wav,.ogg">
+          <div class="audio-drop__placeholder">
+            <span class="audio-drop__icon">🎙️</span>
+            <span>Click to add a voice note</span>
+          </div>
+          <div id="audio-info" class="audio-info" style="display:none;"></div>
+        </div>
+        <p id="audio-error" class="form-error" style="display:none;"></p>
       </div>
 
       <div class="form-group" style="text-align: center;">

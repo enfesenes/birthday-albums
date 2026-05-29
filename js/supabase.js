@@ -30,7 +30,8 @@ function getLetters() {
           songTitle: row.song_title,
           songArtist: row.song_artist,
           songUrl: row.song_url || "",
-          photoUrl: row.photo_url || "",
+          photoUrls: Array.isArray(row.photo_urls) ? row.photo_urls : (row.photo_url ? [row.photo_url] : []),
+          audioUrl: row.audio_url || "",
           createdAt: row.created_at
         };
       });
@@ -46,7 +47,8 @@ function addLetter(data) {
       song_title: data.songTitle,
       song_artist: data.songArtist,
       song_url: data.songUrl || "",
-      photo_url: data.photoUrl || ""
+      photo_urls: data.photoUrls || [],
+      audio_url: data.audioUrl || ""
     }])
     .select()
     .single()
@@ -75,6 +77,21 @@ function uploadPhoto(file, fileName) {
       if (result.error) throw result.error;
       var publicUrl = supabaseClient.storage
         .from("photos")
+        .getPublicUrl(result.data.path).data.publicUrl;
+      return publicUrl;
+    });
+}
+
+// --- Audio upload ---
+
+function uploadAudio(file, fileName) {
+  return supabaseClient.storage
+    .from("audio")
+    .upload(fileName, file, { cacheControl: "3600", upsert: false })
+    .then(function (result) {
+      if (result.error) throw result.error;
+      var publicUrl = supabaseClient.storage
+        .from("audio")
         .getPublicUrl(result.data.path).data.publicUrl;
       return publicUrl;
     });

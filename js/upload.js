@@ -7,6 +7,8 @@
 
   var UPLOAD_PASSWORD = "birthday2026"; // CHANGE THIS to your own shared secret
   var MAX_PHOTO_WIDTH = 800;
+  var MAX_PHOTOS = 5;
+  var MAX_AUDIO_SIZE = 5 * 1024 * 1024; // 5MB
   var TOTAL_SLOTS = 19;
 
   var passwordGate = document.getElementById("password-gate");
@@ -17,7 +19,6 @@
 
   // --- Password Gate ---
 
-  // Check if already authenticated this session
   if (sessionStorage.getItem("upload-auth") === "true") {
     showUploadApp();
   }
@@ -60,13 +61,13 @@
       .catch(function () {});
   }
 
-  // --- Photo Handling ---
+  // --- Multi-Photo Handling ---
 
   var photoDrop = document.getElementById("photo-drop");
   var photoFile = document.getElementById("photo-file");
-  var photoPreview = document.getElementById("photo-preview");
+  var photoThumbs = document.getElementById("photo-thumbs");
   var photoError = document.getElementById("photo-error");
-  var selectedFile = null;
+  var selectedFiles = [];
 
   photoDrop.addEventListener("click", function () {
     photoFile.click();
@@ -74,7 +75,10 @@
 
   photoFile.addEventListener("change", function () {
     if (photoFile.files.length > 0) {
-      handlePhotoSelect(photoFile.files[0]);
+      for (var i = 0; i < photoFile.files.length; i++) {
+        addPhotoFile(photoFile.files[i]);
+      }
+      photoFile.value = "";
     }
   });
 
@@ -91,27 +95,71 @@
     e.preventDefault();
     photoDrop.style.borderColor = "";
     if (e.dataTransfer.files.length > 0) {
-      handlePhotoSelect(e.dataTransfer.files[0]);
+      for (var i = 0; i < e.dataTransfer.files.length; i++) {
+        addPhotoFile(e.dataTransfer.files[i]);
+      }
     }
   });
 
-  function handlePhotoSelect(file) {
+  function addPhotoFile(file) {
     if (!file.type.startsWith("image/")) {
-      photoError.textContent = "Please select an image file.";
+      photoError.textContent = "Only image files are allowed.";
+      photoError.style.display = "block";
+      return;
+    }
+
+    if (selectedFiles.length >= MAX_PHOTOS) {
+      photoError.textContent = "Maximum " + MAX_PHOTOS + " photos allowed.";
       photoError.style.display = "block";
       return;
     }
 
     photoError.style.display = "none";
-    selectedFile = file;
+    selectedFiles.push(file);
+    renderThumbnails();
+  }
 
-    var reader = new FileReader();
-    reader.onload = function (e) {
-      photoPreview.src = e.target.result;
-      photoPreview.style.display = "block";
-      photoDrop.classList.add("photo-drop--has-photo");
-    };
-    reader.readAsDataURL(file);
+  function removePhoto(index) {
+    selectedFiles.splice(index, 1);
+    renderThumbnails();
+    if (selectedFiles.length === 0) {
+      photoDrop.classList.remove("photo-drop--has-photo");
+    }
+  }
+
+  function renderThumbnails() {
+    photoThumbs.innerHTML = "";
+
+    if (selectedFiles.length === 0) return;
+
+    photoDrop.classList.add("photo-drop--has-photo");
+    photoDrop.querySelector(".photo-drop__placeholder").style.display = "none";
+
+    for (var i = 0; i < selectedFiles.length; i++) {
+      (function (index) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var thumb = document.createElement("div");
+          thumb.className = "photo-thumb";
+          thumb.innerHTML =
+            '<img src="' + e.target.result + '" alt="">' +
+            '<button class="photo-thumb__remove" type="button">&times;</button>';
+          thumb.querySelector(".photo-thumb__remove").addEventListener("click", function (evt) {
+            evt.stopPropagation();
+            removePhoto(index);
+          });
+          photoThumbs.appendChild(thumb);
+        };
+        reader.readAsDataURL(selectedFiles[index]);
+      })(i);
+    }
+
+    // Show "add more" hint if under max
+    if (selectedFiles.length < MAX_PHOTOS) {
+      photoDrop.querySelector(".photo-drop__placeholder").style.display = "";
+      photoDrop.querySelector(".photo-drop__placeholder").querySelector("span:last-child").textContent =
+        selectedFiles.length + " of " + MAX_PHOTOS + " — click to add more";
+    }
   }
 
   function resizePhoto(file) {
@@ -120,17 +168,13 @@
       reader.onload = function (e) {
         var img = new Image();
         img.onload = function () {
-          var width = img.width;
-          var height = img.height;
-
-          // Skip resize if already small enough
-          if (width <= MAX_PHOTO_WIDTH) {
+          if (img.width <= MAX_PHOTO_WIDTH) {
             resolve(file);
             return;
           }
 
-          var ratio = MAX_PHOTO_WIDTH / width;
-          var newHeight = Math.round(height * ratio);
+          var ratio = MAX_PHOTO_WIDTH / img.width;
+          var newHeight = Math.round(img.height * ratio);
 
           var canvas = document.createElement("canvas");
           canvas.width = MAX_PHOTO_WIDTH;
@@ -148,6 +192,73 @@
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
+  }
+
+  // --- Audio Handling ---
+
+  var audioDrop = document.getElementById("audio-drop");
+  var audioFile = document.getElementById("audio-file");
+  var audioInfo = document.getElementById("audio-info");
+  var audioError = document.getElementById("audio-error");
+  var selectedAudio = null;
+
+  audioDrop.addEventListener("click", function () {
+    audioFile.click();
+  });
+
+  audioFile.addEventListener("change", function () {
+    if (audioFile.files.length > 0) {
+      handleAudioSelect(audioFile.files[0]);
+    }
+  });
+
+  audioDrop.addEventListener("dragover", function (e) {
+    e.preventDefault();
+    audioDrop.style.borderColor = "var(--accent)";
+  });
+
+  audioDrop.addEventListener("dragleave", function () {
+    audioDrop.style.borderColor = "";
+  });
+
+  audioDrop.addEventListener("drop", function (e) {
+    e.preventDefault();
+    audioDrop.style.borderColor = "";
+    if (e.dataTransfer.files.length > 0) {
+      handleAudioSelect(e.dataTransfer.files[0]);
+    }
+  });
+
+  function handleAudioSelect(file) {
+    audioError.style.display = "none";
+
+    var allowed = ["audio/mpeg", "audio/mp4", "audio/wav", "audio/ogg",
+      "audio/x-m4a", "audio/mp3", "audio/x-wav"];
+    var ext = file.name.split(".").pop().toLowerCase();
+    var allowedExts = ["mp3", "m4a", "wav", "ogg"];
+
+    if (allowed.indexOf(file.type) === -1 && allowedExts.indexOf(ext) === -1) {
+      audioError.textContent = "Please select an audio file (.mp3, .m4a, .wav, .ogg).";
+      audioError.style.display = "block";
+      return;
+    }
+
+    if (file.size > MAX_AUDIO_SIZE) {
+      audioError.textContent = "Audio file must be under 5MB.";
+      audioError.style.display = "block";
+      return;
+    }
+
+    selectedAudio = file;
+    audioInfo.style.display = "block";
+    audioInfo.textContent = "🎙️ " + file.name + " (" + formatSize(file.size) + ")";
+    audioDrop.querySelector(".audio-drop__placeholder").style.display = "none";
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   }
 
   // --- Form Submission ---
@@ -171,16 +282,34 @@
     submitBtn.textContent = "Placing in Album...";
 
     var name = document.getElementById("name").value.trim();
-    var fileName = Date.now() + "-" + name.replace(/[^a-zA-Z0-9]/g, "_");
+    var filePrefix = Date.now() + "-" + name.replace(/[^a-zA-Z0-9]/g, "_");
 
-    var photoPromise = selectedFile
-      ? resizePhoto(selectedFile).then(function (resized) {
-          return uploadPhoto(resized, fileName);
-        })
+    // Resize and upload all photos
+    var photoPromises = [];
+    for (var i = 0; i < selectedFiles.length; i++) {
+      (function (file, index) {
+        photoPromises.push(
+          resizePhoto(file).then(function (resized) {
+            return uploadPhoto(resized, filePrefix + "_" + index);
+          })
+        );
+      })(selectedFiles[i], i);
+    }
+
+    var allPhotosPromise = photoPromises.length > 0
+      ? Promise.all(photoPromises)
+      : Promise.resolve([]);
+
+    // Upload audio if selected
+    var audioPromise = selectedAudio
+      ? uploadAudio(selectedAudio, filePrefix + "_audio." + selectedAudio.name.split(".").pop())
       : Promise.resolve("");
 
-    photoPromise
-      .then(function (photoUrl) {
+    Promise.all([allPhotosPromise, audioPromise])
+      .then(function (results) {
+        var photoUrls = results[0];
+        var audioUrl = results[1];
+
         return addLetter({
           name: name,
           relationship: document.getElementById("relationship").value.trim(),
@@ -188,7 +317,8 @@
           songTitle: document.getElementById("song-title").value.trim(),
           songArtist: document.getElementById("song-artist").value.trim(),
           songUrl: document.getElementById("song-url").value.trim(),
-          photoUrl: photoUrl
+          photoUrls: photoUrls,
+          audioUrl: audioUrl
         });
       })
       .then(function () {
@@ -207,9 +337,17 @@
 
   submitAnother.addEventListener("click", function () {
     form.reset();
-    photoPreview.style.display = "none";
+    selectedFiles = [];
+    selectedAudio = null;
+    photoThumbs.innerHTML = "";
     photoDrop.classList.remove("photo-drop--has-photo");
-    selectedFile = null;
+    photoDrop.querySelector(".photo-drop__placeholder").style.display = "";
+    photoDrop.querySelector(".photo-drop__placeholder span:last-child").textContent =
+      "Click or drag up to 5 photos here";
+    audioInfo.style.display = "none";
+    audioInfo.textContent = "";
+    audioDrop.querySelector(".audio-drop__placeholder").style.display = "";
+    audioError.style.display = "none";
     confirmation.style.display = "none";
     form.style.display = "block";
     submitBtn.disabled = false;
@@ -234,8 +372,8 @@
       }
     });
 
-    if (!selectedFile) {
-      photoError.textContent = "Please select a photo of you together.";
+    if (selectedFiles.length === 0) {
+      photoError.textContent = "Please select at least one photo.";
       photoError.style.display = "block";
       valid = false;
     } else {
