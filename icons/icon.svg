@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#0f0f1a"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0c987"/>
+      <stop offset="100%" stop-color="#e8b86d"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.15)"/>
+      <stop offset="30%" stop-color="rgba(255,255,255,0.03)"/>
+      <stop offset="60%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.15)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" fill="url(#bg)"/>
+
+  <!-- CD jewel case frame -->
+  <rect x="56" y="56" width="400" height="400" rx="24" fill="none" stroke="#2a2a3a" stroke-width="12"/>
+  <rect x="62" y="62" width="388" height="388" rx="20" fill="#1a1a2e" stroke="#e8b86d" stroke-width="4"/>
+
+  <!-- Spine -->
+  <rect x="56" y="56" width="24" height="400" rx="4" fill="#2a2a40" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+  <!-- CD disc -->
+  <circle cx="260" cy="220" r="120" fill="none" stroke="url(#gold)" stroke-width="3" opacity="0.5"/>
+  <circle cx="260" cy="220" r="100" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.3"/>
+  <circle cx="260" cy="220" r="30" fill="none" stroke="url(#gold)" stroke-width="6"/>
+  <circle cx="260" cy="220" r="10" fill="#0f0f1a"/>
+  <circle cx="260" cy="220" r="4" fill="#e8b86d"/>
+
+  <!-- Music note inside CD -->
+  <text x="260" y="240" text-anchor="middle" fill="#e8b86d" font-size="80" font-family="serif" opacity="0.6">♪</text>
+
+  <!-- Gloss overlay -->
+  <rect x="62" y="62" width="388" height="388" rx="20" fill="url(#gloss)"/>
+
+  <!-- Bottom label area -->
+  <rect x="62" y="400" width="388" height="50" fill="rgba(0,0,0,0.6)"/>
+  <text x="256" y="432" text-anchor="middle" fill="#e8b86d" font-size="22" font-family="sans-serif" font-weight="600">İREM</text>
+
+  <!-- 19 tiny dots around the border -->
+  <g fill="#e8b86d" opacity="0.4">
+    <circle cx="80" cy="256" r="3"/>
+    <circle cx="256" cy="80" r="3"/>
+    <circle cx="432" cy="256" r="3"/>
+    <circle cx="256" cy="432" r="3"/>
+  </g>
+</svg>
