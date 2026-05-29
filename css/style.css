@@ -299,9 +299,9 @@ body {
   position: relative;
   z-index: 1;
   width: 90%;
-  max-width: 700px;
-  max-height: 85vh;
-  margin: 3vh auto 0;
+  max-width: 750px;
+  max-height: 90vh;
+  margin: 2vh auto 0;
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
@@ -336,6 +336,33 @@ body {
 .modal__inner {
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 640px) {
+  .modal__inner {
+    flex-direction: row;
+  }
+
+  .modal__art {
+    width: 40%;
+    flex-shrink: 0;
+    aspect-ratio: auto;
+    max-height: none;
+    min-height: 100%;
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  }
+
+  .modal__art img {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .modal__body {
+    width: 60%;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 1.75rem;
+  }
 }
 
 .modal__art {
@@ -410,6 +437,64 @@ body {
 
 .modal__song-link:hover {
   color: var(--accent-glow);
+}
+
+.modal__player {
+  margin-top: 1rem;
+}
+
+.player-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 for YouTube */
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+}
+
+.player-wrapper--spotify {
+  padding-top: 152px; /* fixed height for Spotify */
+}
+
+.player-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: var(--radius);
+}
+
+.player-iframe--spotify {
+  height: 152px;
+}
+
+/* --- Long letter scrolling --- */
+.modal__message {
+  max-height: 30vh;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Scrollbar styling */
+.modal__message::-webkit-scrollbar,
+.modal__body::-webkit-scrollbar,
+.modal__content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.modal__message::-webkit-scrollbar-track,
+.modal__body::-webkit-scrollbar-track,
+.modal__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal__message::-webkit-scrollbar-thumb,
+.modal__body::-webkit-scrollbar-thumb,
+.modal__content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
 }
 
 /* --- Upload: Password Gate --- */

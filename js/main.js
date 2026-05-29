@@ -172,8 +172,74 @@
       songLink.style.display = "none";
     }
 
+    renderPlayer(letter.songUrl);
+
+    // Reset scroll position
+    var content = modalEl.querySelector(".modal__content");
+    if (content) content.scrollTop = 0;
+
     modalEl.classList.add("modal--open");
     document.body.style.overflow = "hidden";
+  }
+
+  function renderPlayer(url) {
+    var playerEl = document.getElementById("modal-player");
+    playerEl.innerHTML = "";
+
+    if (!url) return;
+
+    // YouTube
+    var ytId = parseYouTubeId(url);
+    if (ytId) {
+      playerEl.innerHTML =
+        '<div class="player-wrapper">' +
+          '<iframe src="https://www.youtube.com/embed/' + ytId + '" ' +
+            'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen ' +
+            'class="player-iframe">' +
+          '</iframe>' +
+        '</div>';
+      return;
+    }
+
+    // Spotify
+    var spotifyUri = parseSpotifyUri(url);
+    if (spotifyUri) {
+      playerEl.innerHTML =
+        '<div class="player-wrapper player-wrapper--spotify">' +
+          '<iframe src="https://open.spotify.com/embed/' + spotifyUri + '" ' +
+            'frameborder="0" allowtransparency="true" allow="encrypted-media" ' +
+            'class="player-iframe player-iframe--spotify">' +
+          '</iframe>' +
+        '</div>';
+    }
+  }
+
+  function parseYouTubeId(url) {
+    var match;
+    // youtu.be/VIDEO_ID
+    match = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+    if (match) return match[1];
+    // youtube.com/watch?v=VIDEO_ID
+    match = url.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/);
+    if (match) return match[1];
+    // youtube.com/embed/VIDEO_ID
+    match = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+    if (match) return match[1];
+    // m.youtube.com/watch?v=VIDEO_ID
+    match = url.match(/m\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/);
+    if (match) return match[1];
+    return null;
+  }
+
+  function parseSpotifyUri(url) {
+    var match;
+    // open.spotify.com/track/ID
+    match = url.match(/open\.spotify\.com\/track\/([a-zA-Z0-9]+)/);
+    if (match) return "track/" + match[1];
+    // open.spotify.com/album/ID
+    match = url.match(/open\.spotify\.com\/album\/([a-zA-Z0-9]+)/);
+    if (match) return "album/" + match[1];
+    return null;
   }
 
   function closeModal() {
