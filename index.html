@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy 19th Birthday! 🎂</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="bg-ambiance"></div>
+
+  <div class="container">
+    <header class="header">
+      <h1 class="title">Happy 19th Birthday</h1>
+      <p class="subtitle">19 albums from the people who love you</p>
+    </header>
+
+    <div id="countdown" class="countdown">
+      <div class="countdown__label">unlocking in</div>
+      <div class="countdown__timer">
+        <div class="countdown__unit">
+          <span id="countdown-days" class="countdown__number">00</span>
+          <span class="countdown__word">days</span>
+        </div>
+        <span class="countdown__sep">:</span>
+        <div class="countdown__unit">
+          <span id="countdown-hours" class="countdown__number">00</span>
+          <span class="countdown__word">hours</span>
+        </div>
+        <span class="countdown__sep">:</span>
+        <div class="countdown__unit">
+          <span id="countdown-mins" class="countdown__number">00</span>
+          <span class="countdown__word">mins</span>
+        </div>
+        <span class="countdown__sep">:</span>
+        <div class="countdown__unit">
+          <span id="countdown-secs" class="countdown__number">00</span>
+          <span class="countdown__word">secs</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="cd-grid" class="cd-grid" style="display:none;">
+      <!-- 19 CD cases rendered by JS -->
+    </div>
+
+    <div id="locked-grid" class="cd-grid">
+      <!-- 19 locked silhouettes -->
+    </div>
+  </div>
+
+  <div id="modal" class="modal">
+    <div class="modal__overlay"></div>
+    <div class="modal__content">
+      <button class="modal__close">&times;</button>
+      <div class="modal__inner">
+        <div class="modal__art">
+          <img id="modal-photo" src="" alt="">
+        </div>
+        <div class="modal__body">
+          <p class="modal__from"><span id="modal-name"></span> &mdash; <span id="modal-relationship"></span></p>
+          <div id="modal-message" class="modal__message"></div>
+          <div class="modal__song">
+            <div class="modal__song-icon">🎵</div>
+            <div>
+              <p class="modal__song-title" id="modal-song-title"></p>
+              <p class="modal__song-artist" id="modal-song-artist"></p>
+              <a id="modal-song-link" href="#" target="_blank" class="modal__song-link">Listen →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

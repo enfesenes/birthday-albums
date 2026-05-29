@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave a Letter 💌</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="bg-ambiance"></div>
+
+  <div id="password-gate" class="password-gate">
+    <div class="password-gate__card">
+      <h2>🔐 Secret Entrance</h2>
+      <p>Enter the password shared with you to leave your letter.</p>
+      <input type="password" id="password-input" class="input" placeholder="Password...">
+      <button id="password-submit" class="btn">Enter</button>
+      <p id="password-error" class="form-error" style="display:none;">Wrong password — try again!</p>
+    </div>
+  </div>
+
+  <div id="upload-app" class="upload-container" style="display:none;">
+    <header class="header">
+      <h1 class="title">Leave Your Letter</h1>
+      <p class="subtitle">Write a letter, pick a song, and share a photo for the birthday album</p>
+      <p id="submission-count" class="submission-count"></p>
+    </header>
+
+    <form id="upload-form" class="upload-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Your Name *</label>
+          <input type="text" id="name" class="input" required placeholder="e.g. Mom, Sarah, Alex...">
+        </div>
+        <div class="form-group">
+          <label for="relationship">Relationship *</label>
+          <input type="text" id="relationship" class="input" required placeholder="e.g. Best Friend, Sister, Cousin...">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Your Letter *</label>
+        <textarea id="message" class="input input--textarea" required placeholder="Write your letter here... tell her what she means to you, share a memory, say happy birthday..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="song-title">Song Title *</label>
+          <input type="text" id="song-title" class="input" required placeholder="The song that reminds you of her">
+        </div>
+        <div class="form-group">
+          <label for="song-artist">Artist *</label>
+          <input type="text" id="song-artist" class="input" required placeholder="Artist name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="song-url">Song Link (optional — YouTube, Spotify, etc.)</label>
+        <input type="url" id="song-url" class="input" placeholder="https://...">
+      </div>
+
+      <div class="form-group">
+        <label>Photo of You Together *</label>
+        <div id="photo-drop" class="photo-drop">
+          <input type="file" id="photo-file" class="photo-drop__input" accept="image/*">
+          <div class="photo-drop__placeholder">
+            <span class="photo-drop__icon">📸</span>
+            <span>Click or drag a photo here</span>
+          </div>
+          <img id="photo-preview" class="photo-drop__preview" src="" alt="" style="display:none;">
+        </div>
+        <p id="photo-error" class="form-error" style="display:none;">Please select a photo.</p>
+      </div>
+
+      <div class="form-group" style="text-align: center;">
+        <button type="submit" id="submit-btn" class="btn btn--large">Place in Album ✨</button>
+      </div>
+    </form>
+
+    <div id="confirmation" class="confirmation" style="display:none;">
+      <div class="confirmation__card">
+        <h2>✨ Letter Placed!</h2>
+        <p>Your letter will be waiting for her on her birthday.</p>
+        <p class="confirmation__note">Thank you for being part of this. 💕</p>
+        <button id="submit-another" class="btn">Submit Another Letter</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/upload.js"></script>
+</body>
+</html>
