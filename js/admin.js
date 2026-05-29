@@ -45,6 +45,73 @@
     gate.style.display = "none";
     app.style.display = "block";
     loadData();
+    requestNotificationPermission();
+    subscribeRealtime();
+  }
+
+  // --- Browser Notifications ---
+
+  function requestNotificationPermission() {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }
+
+  function notifyNewLetter(letter) {
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        var n = new Notification("💌 New Letter Placed!", {
+          body: letter.name + " (" + letter.relationship + ") — \"" + letter.songTitle + "\"",
+          icon: "icons/icon-192.png",
+          tag: "new-letter"
+        });
+        n.addEventListener("click", function () {
+          window.focus();
+          n.close();
+        });
+      } catch (e) {
+        // Notification API not fully supported
+      }
+    }
+  }
+
+  // --- Supabase Realtime ---
+
+  function subscribeRealtime() {
+    if (typeof supabaseClient === "undefined") return;
+
+    try {
+      supabaseClient
+        .channel("letters-realtime")
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "letters" },
+          function (payload) {
+            var row = payload.new;
+            var letter = {
+              id: row.id,
+              name: row.name,
+              relationship: row.relationship,
+              message: row.message,
+              songTitle: row.song_title,
+              songArtist: row.song_artist,
+              songUrl: row.song_url || "",
+              photoUrls: Array.isArray(row.photo_urls) ? row.photo_urls : (row.photo_url ? [row.photo_url] : []),
+              audioUrl: row.audio_url || "",
+              createdAt: row.created_at
+            };
+            notifyNewLetter(letter);
+            loadData();
+          }
+        )
+        .subscribe(function (status) {
+          if (status === "SUBSCRIBED") {
+            console.log("Realtime: listening for new letters");
+          }
+        });
+    } catch (e) {
+      console.warn("Realtime not available:", e.message);
+    }
   }
 
   // --- Load & Render ---
